@@ -48,6 +48,7 @@ function trigger_init(){
 require_once 'cardozawppollFrontEndFunctions.php';
 require_once 'cardozawppolldb.php';
 
+
 class WidgetAtsWordpressPoll extends WP_Widget {
 	public function __construct() {
 		$widget_ops = array( 
@@ -58,26 +59,74 @@ class WidgetAtsWordpressPoll extends WP_Widget {
 		parent::__construct( 'tim-cwp-poll', 'ATS Wordpress Poll', $widget_ops, $control_ops );
 	}
 
+	static function cmpOrder($a, $b) {
+		return $a["order"] > $b["order"];
+	}
+	
 	public function form($instance) {
+		wp_enqueue_script('tim-poll-widget-config', CWP_PGN_DIR.'public/js/tim_poll_widget_config.js', array('jquery'));
+		
+		$cwp = new CWPController();
+		$polls = $cwp->retrievePoll();
+		
+		$pollQuestions = array();
+		foreach ($polls as $poll) {
+			$uniq_name = "poll-".$poll->id;
+			$checkbox_name = $this->get_field_name("$uniq_name");
+			
+			$uniq_order_name = "order-".$poll->id;
+			$order_name = $this->get_field_name("$uniq_order_name");
+			
+			$instance[$uniq_order_name];
+			$pollQuestions[] = array(
+				"name" => $poll->name,
+				"checkbox_name" => $checkbox_name, 
+				"checked" => $instance[$uniq_name],
+				"order_name" => $order_name,
+				"order" => $instance[$uniq_order_name] ? $instance[$uniq_order_name] : 0
+			);
+		}
+		
+		usort($pollQuestions, array('WidgetAtsWordpressPoll', 'cmpOrder'));
+
 		?>
-<p>
-	<label for="<?php echo $this->get_field_id('poll_count'); ?>"><?php _e("Max poll count", "cardozapolldomain"); ?></label>:
-	<input type="text" id="<?php echo $this->get_field_id('poll_count'); ?>" name="<?php echo $this->get_field_name('poll_count');?>" value="<?php echo $instance['poll_count']; ?>" />
-</p>
+<ul class="ats-sortable">
+		<?php 
+		foreach ($pollQuestions as $question) {
+			?>
+	<li>
+		<input type="checkbox" value="1" name="<?php echo $question["checkbox_name"];?>" <?php checked( $question["checked"], 1);?>/>
+		<?php echo $question["name"];?>
+		<input type="hidden" value="<?php echo $question["order"];?>" name="<?php echo $question["order_name"];?>" />
+	</li>
+			<?php
+		}
+		?>
+</ul>
+<input type="button" class="sort-activator" value="Enable sort" />
 		<?php 
 	}
  
 	public function update($new_instance, $old_instance) {
 		$instance = array();
-		$instance['poll_count'] = intval( $new_instance['poll_count'] );
+//		$instance['poll_count'] = intval( $new_instance['poll_count'] );
+		
+		$cwp = new CWPController();
+		$polls = $cwp->retrievePoll();
+		foreach ($polls as $poll) {
+			$uniq_name = "poll-".$poll->id;
+			$instance[$uniq_name] = intval( $new_instance[$uniq_name] );
+			
+			$uniq_order_name = "order-".$poll->id;
+			$instance[$uniq_order_name] = intval( $new_instance[$uniq_order_name] );
+		}
+		
 		return $instance;
 	}
  
 	public function widget($args, $instance) {
 		wp_enqueue_script('tim-poll-navigation', CWP_PGN_DIR.'public/js/tim_poll_navigation.js', array('jquery'));
 		wp_enqueue_script('tim-poll-navigation-start', CWP_PGN_DIR.'public/js/tim_poll_navigation_start.js', array('jquery', 'tim-poll-navigation'));
-
-		$max_poll_count = ( $instance['poll_count'] ) ? $instance['poll_count'] : 1;
 
 		$cwp = new CWPController();
 		
@@ -90,26 +139,46 @@ class WidgetAtsWordpressPoll extends WP_Widget {
 		
 		echo $before_widget;
 		echo $before_title;
-		
-		if(empty($option_value['title'])) $option_value['title'] = "Poll";
+		if(empty($option_value['title'])) {
+			$option_value['title'] = "Poll";
+		}
 		echo $option_value['title'];
+		echo $after_title;
 		
-		
+
 		if(!empty($option_value['no_of_polls'])) 
 			$no_of_polls_in_Widget = $option_value['no_of_polls'];
 		else 
 			$no_of_polls_in_Widget = 1;
 		
-		$no_of_polls_in_Widget = $max_poll_count;
 		
-		echo $after_title;
+		$polls = $cwp->retrievePoll();
+		$pollsArr = array();
+		foreach ($polls as $poll) {
+			$uniq_name = "poll-".$poll->id;
+			$uniq_order_name = "order-".$poll->id;
+			
+			$pollsArr[] = array(
+				"order" => $instance[$uniq_order_name] ? $instance[$uniq_order_name] : 0,
+				"poll" => $poll,
+				"checked" => $instance[$uniq_name]
+			);
+		}
+
+		usort($pollsArr, array('WidgetAtsWordpressPoll', 'cmpOrder'));
+		
+		
 		?>
 <div class="poll-list">		
 		<?php
 		
-		$polls = $cwp->retrievePoll();
 		$count = 1;
-		foreach($polls as $poll){
+		foreach($pollsArr as $pollInfo){
+			if ( 1 != $pollInfo["checked"] ) {
+				continue;
+			}
+			
+			$poll = $pollInfo["poll"];
 			$poll_end_date = $poll->end_date;
 			$expiry_date = explode('/', $poll_end_date);
 			$exp_time = mktime(0,0,0,$expiry_date[1], $expiry_date[0], $expiry_date[2]);
