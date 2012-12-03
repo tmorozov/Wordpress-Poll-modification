@@ -45,56 +45,6 @@ function displayPollResults( $vars){
 	<?php
 }
 
-function showSimplePollForm($vars){
-    
-    $poll_answers = $vars['poll_answers'];
-    $total = $vars['total_votes'];
-    $option_value = $vars['option_value'];
-    $poll = $vars['poll'];
-    
-    $option = 1;
-    $exp_time = $vars['exp_time'];
-    if(empty($poll->no_of_answers)) $poll->no_of_answers = 100;
-    ?>
-    <div class="show-form<?php echo $poll->id;?>">
-        
-        <?php
-        print '<table>';
-        foreach($poll_answers as $answer){
-            if($poll->answer_type == "one"){
-                    print '<tr><td valign="middle"><input type="radio" name="'.$poll->id.'" value="'.$answer->id.'" /></td>';
-                    if($poll->poll_type == 'image_poll') {
-                        print '<td><img src="'.$answer->answer.'" width="100" alt="'.$answer->answer.'" /></td>';
-                    }
-                    else {
-                        print '<td>'.$answer->answer.'</td>';
-                    }
-                    print '</tr>';
-            }
-            if($poll->answer_type == "multiple"){
-                print '<tr><td valign="middle"><input type="checkbox" name="option'.$option.'" value="'.$answer->id.'" /></td>';
-                if($poll->poll_type == 'image_poll') {
-                        print '<td><img src="'.$answer->answer.'" width="100" alt="'.$answer->answer.'"/></td>';
-                    }
-                    else {
-                        print '<td>'.$answer->answer.'</td>';
-                    }
-                print '</tr>';
-            }
-            $option++;
-        }
-        print '</table>';
-        ?>
-        <input type="hidden" value="<?php print $poll->id;?>" name="poll_id" />
-        <input type="hidden" value="<?php print $exp_time;?>" name="expiry" />
-        <input type="hidden" value="<?php print $poll->answer_type;?>" name="answertype"/>
-        <input type="hidden" value="<?php print $poll->no_of_answers;?>" name="max_no_of_answers" />
-        <input type="hidden" value="submit_vote" name="action"/>
-        <input class="poll-wh-style" type="submit" value="<?php print __('Vote', 'cardozapolldomain');?>" />
-    </div>
-    <?php
-}
-
 function showPollForm($vars){
     
     $poll_answers = $vars['poll_answers'];

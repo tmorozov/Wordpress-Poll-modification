@@ -1,0 +1,24 @@
+div.poll-list ul {
+	list-style-type: none;
+	margin-left: 0;
+	padding-left: 0;
+}
+
+div.poll-list .poll-bar-back {
+	background-color: black;
+}
+
+div.poll-list .poll-bar {
+	height: 16px;
+	background-color: #DB2026;
+	color: white;
+	border: solid 1px black;
+}
+
+div.poll-list .next-poll, div.poll-list .poll-wh-style {
+	border: none;
+	background-color: black;
+	color: white;
+	font-weight: bold;
+	margin-top: 30px;
+}

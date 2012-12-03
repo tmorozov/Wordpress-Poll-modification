@@ -234,12 +234,11 @@ class CWPController {
             $answer_type = $poll[0]->answer_type;
             
             $total = $poll[0]->total_votes;
-            if($answer_type == "multiple") print "<b>Total Voters: </b>".$total."<br/>";
     
             foreach($answers as $answer){
                 $total_votes = $total_votes + $answer->votes;
             }
-            print "<b>".__('Total votes','cardozapolldomain').": </b>".$total_votes."<br/>";
+            
             foreach($answers as $answer){
                 
                 $total = $poll[0]->total_votes;
@@ -250,16 +249,14 @@ class CWPController {
                 if($poll[0]->poll_type == 'image_poll')
                     print "<div class='result-answer'><img src='".$answer->answer."' width='100' alt='".$answer->answer."'/> <br />(".$answer->votes.__(" votes", "cardozapolldomain").", ".round($width)."%)</div>";
                 else
-                    print "<div class='result-answer'>".$answer->answer." (".$answer->votes.__(" votes", "cardozapolldomain").", ".round($width)."%)</div>";
-                ?>
-                <br/>
-                <div style="
-                height:<?php if(!empty($option_value['bar_height'])) echo $option_value['bar_height'];
-                else echo "10";?>px;
-                width:<?php echo $width?>%;background-color:#<?php if(!empty($option_value['bar_color'])) echo $option_value['bar_color'];
-                else echo "ECF1EF";?>"></div>
+                    print "<div class='result-answer'>".$answer->answer."</div>";
+                ?>              
+				<div class="poll-bar-back">
+					<div class="poll-bar" style="width:<?php echo $width?>%;"><?php echo round($width);?>%</div>
+				</div>
                 <?php
             }    
+			print "<div class='total-votes'><b>".__("total votes", "cardozapolldomain").": </b>".$total_votes."</div>";
         }
         
         die();

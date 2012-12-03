@@ -46,6 +46,7 @@ function trigger_init(){
 
 /*Calling all the required files*/
 require_once 'cardozawppollFrontEndFunctions.php';
+require_once 'ats-poll-front-end-functions.php';
 require_once 'cardozawppolldb.php';
 
 
@@ -125,6 +126,8 @@ class WidgetAtsWordpressPoll extends WP_Widget {
 	}
  
 	public function widget($args, $instance) {
+		wp_enqueue_style('ats-poll-css', CWP_PGN_DIR.'public/css/ats.css');
+	
 		wp_enqueue_script('tim-poll-navigation', CWP_PGN_DIR.'public/js/tim_poll_navigation.js', array('jquery'));
 		wp_enqueue_script('tim-poll-navigation-start', CWP_PGN_DIR.'public/js/tim_poll_navigation_start.js', array('jquery', 'tim-poll-navigation'));
 
@@ -138,11 +141,16 @@ class WidgetAtsWordpressPoll extends WP_Widget {
 		extract($args);
 		
 		echo $before_widget;
+		?>
+<div class="white-side-box">
+		<?php
 		echo $before_title;
 		if(empty($option_value['title'])) {
 			$option_value['title'] = "Poll";
 		}
-		echo $option_value['title'];
+		?>
+	<div class="red-caption"><?php echo $option_value['title']; ?></div>
+		<?php
 		echo $after_title;
 		
 
@@ -169,7 +177,7 @@ class WidgetAtsWordpressPoll extends WP_Widget {
 		
 		
 		?>
-<div class="poll-list">		
+	<div class="poll-list">		
 		<?php
 		
 		$count = 1;
@@ -184,9 +192,9 @@ class WidgetAtsWordpressPoll extends WP_Widget {
 			$exp_time = mktime(0,0,0,$expiry_date[1], $expiry_date[0], $expiry_date[2]);
 			if ($count <= $no_of_polls_in_Widget) {
 				?>
-	<div class="widget-poll" <?php if(!empty($option_value['poll_bg_color'])) echo 'style="background-color:#'.$option_value['poll_bg_color'].';"';?>>
-		<div class="widget-poll-question"><?php print $poll->question;?></div>
-		<form class="poll<?php print $poll->id;?>" method="post" action="wp-admin/admin-ajax.php">
+		<div class="widget-poll" <?php if(!empty($option_value['poll_bg_color'])) echo 'style="background-color:#'.$option_value['poll_bg_color'].';"';?>>
+			<h2 class="widget-poll-question"><?php print $poll->question;?></h2>
+			<form class="poll<?php print $poll->id;?>" method="post" action="wp-admin/admin-ajax.php">
 				<?php
 				
 				$poll_answers = $cwp->getPollAnswers($poll->id);
@@ -207,10 +215,10 @@ class WidgetAtsWordpressPoll extends WP_Widget {
 						if (empty($status)) {
 							showSimplePollForm($vars);
 						} else {
-							displayPollResults($vars);
+							displayAtsPollResults($vars);
 						}
 					} else {
-						displayPollResults($vars);
+						displayAtsPollResults($vars);
 					}
 				}
 				else{
@@ -218,30 +226,31 @@ class WidgetAtsWordpressPoll extends WP_Widget {
 					if(empty($lock_by)) $lock_by = 'cookies';
 					if($lock_by == 'cookies'){
 						if(isset($_COOKIE['cwppoll'.$poll->id])) {
-							displayPollResults($vars);
+							displayAtsPollResults($vars);
 						} else {
 							showSimplePollForm($vars);
 						}
 					} elseif($lock_by == 'ipaddress') {
 						$status = $cwp->getPollIPLogged($poll->id);
 						if(!empty($status)) {
-							displayPollResults($vars);
+							displayAtsPollResults($vars);
 						} else {
 							showSimplePollForm($vars);
 						}
 					}
 				}
 				?>
-		</form>
-	</div>
+			</form>
+		</div>
 			<?php 
 			}
 			$count++;
 		}
 		?>
-</div>		
+	</div>
+</div>
+<div class="clear_30"></div>	
 		<?php
-		
 		echo $after_widget;
 	}
 }
