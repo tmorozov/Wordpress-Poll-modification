@@ -86,7 +86,7 @@ function displayAtsPollResults( $vars){
                 print "<div class='result-answer'><img src='".$answer->answer."' width='100' alt='".$answer->answer."'/> <br />(".$answer->votes.__(" votes", "cardozapolldomain").", ".round($width)."%)</div>";
             else
                 print "<div class='result-answer'>".$answer->answer."</div>";
-            print '<div class="poll-bar-back"><div class="poll-bar" style="width:'.$width.'%;">'.round($width).'%</div></div>';
+            print '<div class="poll-bar-back"><div class="poll-bar" style="width:'.$width.'%;"><span class="poll-percents">'.round($width).'%</span></div></div>';
         } 
 		print "<div class='total-votes small_grey'>".__("total votes", "cardozapolldomain").": ".$total_votes."</div>";
     ?>

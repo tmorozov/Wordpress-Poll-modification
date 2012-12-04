@@ -252,7 +252,7 @@ class CWPController {
                     print "<div class='result-answer'>".$answer->answer."</div>";
                 ?>              
 				<div class="poll-bar-back">
-					<div class="poll-bar" style="width:<?php echo $width?>%;"><?php echo round($width);?>%</div>
+					<div class="poll-bar" style="width:<?php echo $width?>%;"><span class="poll-percents"><?php echo round($width);?>%</div></div>
 				</div>
                 <?php
             }    

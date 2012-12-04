@@ -28,7 +28,10 @@ div.poll-list .poll-bar {
 	background-color: #DB2026;
 	color: white;
 	border: solid 1px black;
-	padding-left: 5px;
+}
+
+div.poll-list .poll-bar .poll-percents {
+	margin-left: 5px;
 }
 
 div.poll-list .next-poll, div.poll-list .poll-wh-style {
