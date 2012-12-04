@@ -256,7 +256,7 @@ class CWPController {
 				</div>
                 <?php
             }    
-			print "<div class='total-votes'><b>".__("total votes", "cardozapolldomain").": </b>".$total_votes."</div>";
+			print "<div class='total-votes small_grey'><b>".__("total votes", "cardozapolldomain").": </b>".$total_votes."</div>";
         }
         
         die();

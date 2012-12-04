@@ -142,7 +142,7 @@ class WidgetAtsWordpressPoll extends WP_Widget {
 		
 		echo $before_widget;
 		?>
-<div class="white-side-box">
+<div class="white-side-box polls">
 		<?php
 		echo $before_title;
 		if(empty($option_value['title'])) {
@@ -192,7 +192,7 @@ class WidgetAtsWordpressPoll extends WP_Widget {
 			$exp_time = mktime(0,0,0,$expiry_date[1], $expiry_date[0], $expiry_date[2]);
 			if ($count <= $no_of_polls_in_Widget) {
 				?>
-		<div class="widget-poll" <?php if(!empty($option_value['poll_bg_color'])) echo 'style="background-color:#'.$option_value['poll_bg_color'].';"';?>>
+		<div class="widget-poll bigger_text" <?php if(!empty($option_value['poll_bg_color'])) echo 'style="background-color:#'.$option_value['poll_bg_color'].';"';?>>
 			<h2 class="widget-poll-question"><?php print $poll->question;?></h2>
 			<form class="poll<?php print $poll->id;?>" method="post" action="wp-admin/admin-ajax.php">
 				<?php

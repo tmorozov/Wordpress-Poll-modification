@@ -68,8 +68,6 @@ function displayAtsPollResults( $vars){
     ?>
     <div class="show-results<?php echo $poll_id;?>">
     <?php
-        if($answer_type == "multiple") print "<div class='total-voters'><b>".__("Total voters", "cardozapolldomain").": </b>".$total."</div>";
-
         foreach($poll_answers as $answer){
             $total_votes = $total_votes + $answer->votes;
         }
@@ -90,7 +88,7 @@ function displayAtsPollResults( $vars){
                 print "<div class='result-answer'>".$answer->answer."</div>";
             print '<div class="poll-bar-back"><div class="poll-bar" style="width:'.$width.'%;">'.round($width).'%</div></div>';
         } 
-		print "<div class='total-votes'><b>".__("total votes", "cardozapolldomain").": </b>".$total_votes."</div>";
+		print "<div class='total-votes small_grey'>".__("total votes", "cardozapolldomain").": ".$total_votes."</div>";
     ?>
     </div>
 	<?php
